@@ -64,10 +64,10 @@ const series = [
 
 export default function Dashboard() {
   return (
-    <Flex direction='column' h='100vh'>
+    <Flex direction='column' h='100vh' px='6'>
       <Header />
 
-      <Flex w='100%' my='6' maxWidth={1480} mx='auto' px='6'>
+      <Flex w='100%' my='6' maxWidth={1480} mx='auto' >
         <SideBar />
 
         <SimpleGrid 
@@ -77,7 +77,7 @@ export default function Dashboard() {
           alignItems='flex-start'
         >
           <Box 
-            padding='8'
+            padding={['6', '8']}
             backgroundColor='gray.800'
             borderRadius={8}
             paddingBottom='4'
@@ -92,7 +92,7 @@ export default function Dashboard() {
           </Box>
 
           <Box 
-            padding='8'
+            padding={['6', '8']}
             backgroundColor='gray.800'
             borderRadius={8}
             paddingBottom='4'
