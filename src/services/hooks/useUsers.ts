@@ -44,6 +44,6 @@ export const getUsers = async (currentPage: number): Promise<GetUsersResponse> =
 export function useUsers(currentPage: number) {
   return useQuery(['@chakraDashboard: users', currentPage], () => getUsers(currentPage), {
     // Vai manter os dados como 'fresh' durante 5 segundos, então nao vai fazer o refetch durante esses 5 seg
-    staleTime: 1000 * 5 //seconds
+    staleTime: 1000 * 60 * 10 // 10 minutes
   })
 }

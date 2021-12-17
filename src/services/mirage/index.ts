@@ -56,6 +56,9 @@ export function makeServer() {
           { users }
         )
       });
+
+      this.get('/users/:id');
+      
       this.post('/users');
 
       // Isso aqui é para resetar o namespace api, para não prejudicar as API routes que temos dentro do next, que ficam em uma pasta api, então elas também são /api/alguma-coisa

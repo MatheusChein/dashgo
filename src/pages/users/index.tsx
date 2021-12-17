@@ -15,6 +15,7 @@ import {
   useBreakpointValue,
   Spinner,
   HStack,
+  Link as ChakraLink
 } from "@chakra-ui/react";
 import Link from 'next/link'
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
@@ -26,6 +27,7 @@ import { Pagination } from "../../components/Pagination";
 import { SideBar } from "../../components/Sidebar";
 import { api } from "../../services/api";
 import { useUsers } from "../../services/hooks/useUsers";
+import { queryClient } from "../../services/queryClient";
 
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
@@ -40,6 +42,16 @@ export default function UserList() {
   useEffect(() => {
     
   }, [])
+
+  async function handlePrefetchUser(userId: string) {
+    await queryClient.prefetchQuery(['@chakraDashboard: user', userId], async () => {
+      const response = await api.get(`/users/${userId}`)
+
+      return response.data
+    }, {
+      staleTime: 1000 * 60 * 10 // 10 minutes
+    })
+  }
 
   return (
     <Box px='6'>
@@ -123,7 +135,9 @@ export default function UserList() {
                     </Td>
                     <Td>
                       <Box>
-                        <Text fontWeight='bold'>{user.name}</Text>
+                        <ChakraLink color='purple.400' onMouseEnter={() => handlePrefetchUser(user.id)}>
+                          <Text fontWeight='bold'>{user.name}</Text>
+                        </ChakraLink>
                         <Text fontSize='sm' color='gray.300 '>{user.email}</Text>
                       </Box>
                     </Td>
