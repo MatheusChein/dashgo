@@ -25,6 +25,7 @@ import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { SideBar } from "../../components/Sidebar";
 import { api } from "../../services/api";
+import { useUsers } from "../../services/hooks/useUsers";
 
 export default function UserList() {
   const isWideVersion = useBreakpointValue({
@@ -32,27 +33,7 @@ export default function UserList() {
     lg: true
   });
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery('@chakraDashboard: users', async () => {
-    const { data } = await api.get('/users')
-
-    const users =  data.users.map(user => (
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: new Date(user.createdAt).toLocaleDateString('pt-Br', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        })
-      }
-    ));
-
-    return users
-  }, {
-    // Vai manter os dados como 'fresh' durante 5 segundos, então nao vai fazer o refetch durante esses 5 seg
-    staleTime: 1000 * 5 //seconds
-  })
+  const { data, isLoading, isFetching, isError, error, refetch } = useUsers()
 
   useEffect(() => {
     
