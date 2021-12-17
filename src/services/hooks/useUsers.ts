@@ -8,8 +8,19 @@ type User = {
   createdAt: string;
 }
 
-export const getUsers = async (): Promise<User[]> => {
-  const { data } = await api.get('/users')
+type GetUsersResponse = {
+  totalCount: number;
+  users: User[]
+}
+
+export const getUsers = async (currentPage: number): Promise<GetUsersResponse> => {
+  const { data, headers } = await api.get('/users', {
+    params: {
+      page: currentPage
+    }
+  })
+
+  const totalCount = Number(headers['x-total-count'])
 
   const users =  data.users.map((user: User) => (
     {
@@ -24,11 +35,14 @@ export const getUsers = async (): Promise<User[]> => {
     }
   ));
 
-  return users
+  return {
+    users,
+    totalCount
+  }
 }
 
-export function useUsers() {
-  return useQuery('@chakraDashboard: users', getUsers, {
+export function useUsers(currentPage: number) {
+  return useQuery(['@chakraDashboard: users', currentPage], () => getUsers(currentPage), {
     // Vai manter os dados como 'fresh' durante 5 segundos, então nao vai fazer o refetch durante esses 5 seg
     staleTime: 1000 * 5 //seconds
   })

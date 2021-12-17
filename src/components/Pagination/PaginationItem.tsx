@@ -2,12 +2,14 @@ import { Stack, Button, Box } from "@chakra-ui/react";
 
 interface PaginationItemProps {
   isCurrent?: boolean;
-  pageNumber: number
+  pageNumber: number;
+  onPageChange: (page: number) => void;
 }
 
 export function PaginationItem({
    isCurrent = false, 
-   pageNumber 
+   pageNumber,
+   onPageChange
 }: PaginationItemProps) {
 
   if (isCurrent) {
@@ -35,6 +37,7 @@ export function PaginationItem({
       fontSize='xs'
       width='4'
       bgColor='gray.700'
+      onClick={() => onPageChange(pageNumber)}
       _hover={{
         bgColor: 'gray.500'
       }}
