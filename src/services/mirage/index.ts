@@ -1,4 +1,4 @@
-import { createServer, Factory, Model } from 'miragejs';
+import { createServer, Factory, JSONAPISerializer, Model, Response } from 'miragejs';
 import faker from 'faker'
 
 type User = {
@@ -28,9 +28,9 @@ export function makeServer() {
     },
 
     seeds(server) {
-      server.createList('user', 10)
+      server.createList('user', 200)
     },
-    
+
     routes() {
       // Isso aqui é para chamar as rotas com /api/get, /api/post etc.
       this.namespace = 'api'
@@ -38,7 +38,24 @@ export function makeServer() {
       // Toda chamada feita para o mirage vai ter um delay de 750ms
       this.timing = 750
 
-      this.get('/users');
+      // A função passada como segundo parâmetro foi criada para configurar a paginação dos dados da API
+      this.get('/users', function (schema, request) {
+        const { page = 1, per_page = 10 } = request.queryParams
+
+        const total = schema.all('user').length;
+
+        const pageStart = (Number(page) - 1) * Number(per_page);
+        const pageEnd = pageStart + Number(per_page)
+
+        const users = this.serialize(schema.all('user')).users.slice(pageStart, pageEnd)
+
+        return new Response(
+          200,
+          // Aqui o nome do header pode ser qualquer coisa, é só um padrao chamar assim
+          { 'x-total-count': String(total) },
+          { users }
+        )
+      });
       this.post('/users');
 
       // Isso aqui é para resetar o namespace api, para não prejudicar as API routes que temos dentro do next, que ficam em uma pasta api, então elas também são /api/alguma-coisa
