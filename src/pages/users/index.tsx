@@ -20,16 +20,16 @@ import {
 import Link from 'next/link'
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { useQuery } from 'react-query'
 
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { SideBar } from "../../components/Sidebar";
 import { api } from "../../services/api";
-import { useUsers } from "../../services/hooks/useUsers";
+import { getUsers, useUsers } from "../../services/hooks/useUsers";
 import { queryClient } from "../../services/queryClient";
+import { GetServerSideProps } from "next";
 
-export default function UserList() {
+export default function UserList({ users }) {
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true
@@ -37,7 +37,9 @@ export default function UserList() {
 
   const [currentPage, setCurrentPage] = useState(1)
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useUsers(currentPage)
+  const { data, isLoading, isFetching, isError, error, refetch } = useUsers(currentPage, {
+    initialData: users
+  })
 
   useEffect(() => {
     
@@ -173,4 +175,14 @@ export default function UserList() {
       </Flex>
     </Box>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { users, totalCount } = await getUsers(1)
+
+  return {
+    props: {
+      users,
+    }
+  }
 }

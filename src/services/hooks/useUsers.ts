@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, UseQueryOptions } from "react-query";
 import { api } from "../api";
 
 type User = {
@@ -41,9 +41,10 @@ export const getUsers = async (currentPage: number): Promise<GetUsersResponse> =
   }
 }
 
-export function useUsers(currentPage: number) {
+export function useUsers(currentPage: number, options: UseQueryOptions) {
   return useQuery(['@chakraDashboard: users', currentPage], () => getUsers(currentPage), {
     // Vai manter os dados como 'fresh' durante 5 segundos, então nao vai fazer o refetch durante esses 5 seg
-    staleTime: 1000 * 60 * 10 // 10 minutes
+    staleTime: 1000 * 60 * 10,
+    ...options // 10 minutes
   })
 }
